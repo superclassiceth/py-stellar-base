@@ -89,7 +89,7 @@ class PathPaymentStrictReceiveOperationResponse(BaseOperationResponse):
         None,
         alias="from",
         description="This variable should be called `from`, "
-        "but `from` is a keyword in Python, so we named it` from_`.",
+        "but `from` is a keyword in Python, so we named it `from_`.",
     )
     to: str
     amount: str
@@ -112,7 +112,7 @@ class PathPaymentStrictSendOperationResponse(BaseOperationResponse):
         None,
         alias="from",
         description="This variable should be called `from`, "
-        "but `from` is a keyword in Python, so we named it` from_`.",
+        "but `from` is a keyword in Python, so we named it `from_`.",
     )
     to: str
     amount: str
