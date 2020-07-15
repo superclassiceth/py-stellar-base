@@ -28,8 +28,8 @@ false = "false"
 
 
 def to_txrep(
-    transaction_envelope: Union[TransactionEnvelope, str],
-    network_passphrase: str = Network.TESTNET_NETWORK_PASSPHRASE,
+        transaction_envelope: Union[TransactionEnvelope, str],
+        network_passphrase: str = Network.TESTNET_NETWORK_PASSPHRASE,
 ) -> str:
     """Txrep is a human-readable representation of Stellar transactions that functions like an assembly language for XDR.
 
@@ -46,6 +46,7 @@ def to_txrep(
 
     lines = []
     transaction = transaction_envelope.transaction
+    __add_type(transaction.v1, lines)
     __add_line("tx.sourceAccount", transaction.source.public_key, lines)
     __add_line("tx.fee", transaction.fee, lines)
     __add_line("tx.seqNum", transaction.sequence, lines)
@@ -59,6 +60,13 @@ def to_txrep(
 
 def __add_line(key: str, value: Union[str, int], lines: List[str]) -> None:
     lines.append("{}: {}".format(key, value))
+
+
+def __add_type(v1: bool, lines: List[str]) -> None:
+    if v1:
+        __add_line("type", "ENVELOPE_TYPE_TX", lines)
+    else:
+        __add_line("type", "ENVELOPE_TYPE_TX_V0", lines)
 
 
 def __add_time_bounds(time_bounds: TimeBounds, lines: List[str]) -> None:
@@ -109,7 +117,7 @@ def __add_operation(index: int, operation: Operation, lines: List[str]) -> None:
     add_operation_line("body.type", operation_type)
 
     def add_body_line(
-        key: str, value: Union[str, int, None], optional: bool = False
+            key: str, value: Union[str, int, None], optional: bool = False
     ) -> None:
         operation_type = OperationType[operation.type_code()]
         key = "body.{}Op.{}".format(__to_camel_case(operation_type), key)
@@ -231,7 +239,7 @@ def __add_operation(index: int, operation: Operation, lines: List[str]) -> None:
 
 
 def __add_signatures(
-    signatures: List[Xdr.types.DecoratedSignature], lines: List[str]
+        signatures: List[Xdr.types.DecoratedSignature], lines: List[str]
 ) -> None:
     __add_line("signatures.len", len(signatures), lines)
     for index, signature in enumerate(signatures):
@@ -239,7 +247,7 @@ def __add_signatures(
 
 
 def __add_signature(
-    index: int, signature: Xdr.types.DecoratedSignature, lines: List[str]
+        index: int, signature: Xdr.types.DecoratedSignature, lines: List[str]
 ) -> None:
     prefix = "signatures[{}]".format(index)
     __add_line("{}.hint".format(prefix), __to_opaque(signature.hint), lines)
